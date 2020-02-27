@@ -1,6 +1,6 @@
 package br.com.josemarsilva.mqseries_api_cli;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
@@ -17,7 +17,7 @@ import com.ibm.msg.client.wmq.WMQConstants;
 public class MqseriesApi {
 
 	// Logger ...
-	final static Logger logger = Logger.getLogger(MqseriesApi.class);
+//	final static Logger logger = Logger.getLogger(MqseriesApi.class);
 
 	/*
 	 * Constants ...
@@ -37,7 +37,7 @@ public class MqseriesApi {
 		super();
 		
 		// Setter cliArgsParser ...
-		logger.info("MqseriesApi - Constructor()");
+//		logger.info("MqseriesApi - Constructor()");
 		this.cliArgsParser = cliArgsParser;
 		
 	}
@@ -48,7 +48,7 @@ public class MqseriesApi {
 	 */
 	public void execute() throws Exception {
 		
-		logger.info("MqseriesApi.execute()");
+//		logger.info("MqseriesApi.execute()");
 
 		// Variables
 		JMSContext context = null;

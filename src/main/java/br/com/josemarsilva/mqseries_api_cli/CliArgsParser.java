@@ -9,7 +9,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 
 /*
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 public class CliArgsParser {
 
 	// Logger ...
-	final static Logger logger = Logger.getLogger(CliArgsParser.class);
+//	final static Logger logger = Logger.getLogger(CliArgsParser.class);
 
 
 	// Constants ...
@@ -58,7 +58,7 @@ public class CliArgsParser {
 
 
 		// Options creating ...
-		logger.info("Command line Options");
+//		logger.info("Command line Options");
 		Options options = new Options();
 		
 		
