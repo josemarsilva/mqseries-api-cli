@@ -29,7 +29,7 @@ public class CliArgsParser {
 
 	// Constants ...
 	public final static String APP_NAME = new String("mqseries-api-cli");
-	public final static String APP_VERSION = new String("v.2020.02.25.2145");
+	public final static String APP_VERSION = new String("v.2020.02.26.1200");
 	public final static String APP_USAGE = new String(APP_NAME + " [<args-options-list>] - "+ APP_VERSION);
 
 	// Constants defaults ...
@@ -48,6 +48,7 @@ public class CliArgsParser {
     private String appPassword = new String("");
     private String queueName = new String("");
     private String message = new String("");
+    private String messageFile = new String("");
 
 
     /*
@@ -121,6 +122,12 @@ public class CliArgsParser {
         		.desc("Message to put. Ex: -m 01020304050607080910")
         		.hasArg()
         		.build();
+        Option messageFileOption = Option.builder("f")
+        		.longOpt("message-file") 
+        		.required(false) 
+        		.desc("Message file to put to or get from. Ex: -f msg.txt")
+        		.hasArg()
+        		.build();
         
 		// Options adding configuration ...
         options.addOption(helpOption);
@@ -133,6 +140,7 @@ public class CliArgsParser {
         options.addOption(appPasswordOption);
         options.addOption(queueNameOption);
         options.addOption(messageOption);
+        options.addOption(messageFileOption);
         
         
         // CommandLineParser ...
@@ -156,6 +164,7 @@ public class CliArgsParser {
 	        	this.setAppPassword( cmdLine.getOptionValue("app-password", "") );
 	        	this.setQueueName( cmdLine.getOptionValue("queue-name", "") );
 	        	this.setMessage( cmdLine.getOptionValue("message", "") );
+	        	this.setMessage( cmdLine.getOptionValue("message-file", "") );
 	        	
 	        	// Logger
 	        	
@@ -183,11 +192,11 @@ public class CliArgsParser {
 	//
 	private void checkArgumentOptions() throws Exception {
 		
-		// Check input file type argument ...
+		// Check argument: action ...
 		if (!this.getAction().equals("get") && !this.getAction().equals("put")) {
 			throw new Exception(MSG_ERROR_ACTION_INVALID.replaceFirst("%s", this.getAction()));
 		}
-		
+				
 	}
 
 
@@ -261,8 +270,16 @@ public class CliArgsParser {
 		return message;
 	}
 
-	public void setMessage(String textMessage) {
-		this.message = textMessage;
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getMessageFile() {
+		return messageFile;
+	}
+
+	public void setMessageFile(String messageFile) {
+		this.messageFile = messageFile;
 	}
 
 	
