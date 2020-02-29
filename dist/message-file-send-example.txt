@@ -1,1 +1,1 @@
-FileContents of message-file-send-example.txt
+This is the content of file 'message-file-send-example.txt' sent in message

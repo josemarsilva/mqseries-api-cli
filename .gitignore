@@ -28,3 +28,6 @@ hs_err_pid*
 .settings/*
 target/*
 /target/
+
+# Custom
+/dist/message-file-received-example.txt

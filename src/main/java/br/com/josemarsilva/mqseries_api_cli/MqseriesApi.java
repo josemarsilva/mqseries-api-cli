@@ -17,6 +17,13 @@ import com.ibm.msg.client.jms.JmsFactoryFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
 
 
+/*
+ * MqseriesApi class is responsible to implements execution of MQSeries commands line arguments PUT and GET
+ * 
+ * @author josemarsilva@yahoo.com.br
+ * @date   2020-02-29
+ * 
+ */
 public class MqseriesApi {
 
 	/*
@@ -102,7 +109,8 @@ public class MqseriesApi {
 			// File Option ?
 			if (!cliArgsParser.getMessageFile().contentEquals("")) {
 				// Write receivedMessage to file ...
-				Files.write(Paths.get(receivedMessageBody), receivedMessageBody.getBytes());
+				System.out.println("Write receivedMessage to file '%s'".replaceAll("%s",cliArgsParser.getMessageFile()));
+				Files.write(Paths.get(cliArgsParser.getMessageFile()), receivedMessageBody.getBytes());
 			}
 
 		}

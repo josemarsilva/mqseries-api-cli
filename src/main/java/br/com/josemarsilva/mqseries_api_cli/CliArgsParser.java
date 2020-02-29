@@ -34,6 +34,7 @@ public class CliArgsParser {
 	public final static String MSG_ERROR_ACTION_INVALID = new String("Error: action '%s' is invalid ! Try 'get' or 'put'");
 	public final static String MSG_ERROR_MESSAGE_FILE_REQUIRED = new String("Error: message-body IS NOT PRESENT, so message-file MUST BE PRESENT! Try '-m YOUR-MESSAGE-HERE' or '-f your-message-filename.txt'");
 	public final static String MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED = new String("Error: message-body IS PRESENT, so message-file MUST BE OMMITED! Try to remove '-f %s'");
+	public final static String MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED = new String("Error: message-body IS PRESENT but MUST BE OMMITED! Try to remove '-m %s'");
 	
 	// Properties ...
     private String action = new String("");
@@ -189,13 +190,17 @@ public class CliArgsParser {
 		if (!this.getAction().equals("get") && !this.getAction().equals("put")) {
 			throw new Exception(MSG_ERROR_ACTION_INVALID.replaceFirst("%s", this.getAction()));
 		}
-		// Check argument: message-body IS NULL message-file MUST NOT BE NULL ...
-		if (this.getMessageBody().equals("") && this.getMessageFile().equals("")) {
+		// Check argument: PUT message-body IS NULL, message-file MUST NOT BE NULL ...
+		if (this.getAction().equals("put") && this.getMessageBody().equals("") && this.getMessageFile().equals("")) {
 			throw new Exception(MSG_ERROR_MESSAGE_FILE_REQUIRED);
 		}
-		// Check argument: message-body IS NOT NULL message-file MUST BE NULL ...
-		if (!this.getMessageBody().equals("") && !this.getMessageFile().equals("")) {
+		// Check argument: PUT message-body IS NOT NULL message-file MUST BE NULL ...
+		if (this.getAction().equals("put") && !this.getMessageBody().equals("") && !this.getMessageFile().equals("")) {
 			throw new Exception(MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED.replaceFirst("%s", this.getMessageFile()));
+		}
+		// Check argument: GET message-body MUST BE NULL ...
+		if (this.getAction().equals("get") && !this.getMessageBody().equals("")) {
+			throw new Exception(MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED.replaceAll("%s", this.getMessageBody()));
 		}
 				
 	}

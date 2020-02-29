@@ -1,5 +1,12 @@
 package br.com.josemarsilva.mqseries_api_cli;
 
+/*
+ * App class is public static void main( String[] args) class
+ * 
+ * @author josemarsilva@yahoo.com.br
+ * @date   2020-02-29
+ * 
+ */
 public class App 
 {
 
