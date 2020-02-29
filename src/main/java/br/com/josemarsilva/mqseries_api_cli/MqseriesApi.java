@@ -1,6 +1,9 @@
 package br.com.josemarsilva.mqseries_api_cli;
 
-//import org.apache.log4j.Logger;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
@@ -15,9 +18,6 @@ import com.ibm.msg.client.wmq.WMQConstants;
 
 
 public class MqseriesApi {
-
-	// Logger ...
-//	final static Logger logger = Logger.getLogger(MqseriesApi.class);
 
 	/*
 	 * Constants ...
@@ -37,7 +37,6 @@ public class MqseriesApi {
 		super();
 		
 		// Setter cliArgsParser ...
-//		logger.info("MqseriesApi - Constructor()");
 		this.cliArgsParser = cliArgsParser;
 		
 	}
@@ -48,8 +47,6 @@ public class MqseriesApi {
 	 */
 	public void execute() throws Exception {
 		
-//		logger.info("MqseriesApi.execute()");
-
 		// Variables
 		JMSContext context = null;
 		Destination destination = null;
@@ -75,22 +72,38 @@ public class MqseriesApi {
 		// Create JMS objects
 		context = cf.createContext();
 		destination = context.createQueue("queue:///" + cliArgsParser.getQueueName());
-		TextMessage message = context.createTextMessage(cliArgsParser.getMessage());
 
 		// PUT or GET ?
 		if (cliArgsParser.getAction().toLowerCase().contentEquals("put")) {
 			
-			// PUT ...
+			// PUT		
+			String messageBodyToSend = new String("");
+			
+			// File Option ? '-f <messageFile>'
+			if (!cliArgsParser.getMessageFile().contentEquals("")) {
+				messageBodyToSend = new String(Files.readAllBytes(Paths.get(cliArgsParser.getMessageFile())));
+			} else {
+				messageBodyToSend = cliArgsParser.getMessageBody();
+			}
+			TextMessage messageBody = context.createTextMessage(messageBodyToSend);
+			
+			// PUT -> Producer Sends message ...
 			producer = context.createProducer();
-			producer.send(destination, message);
-			System.out.println("Sent message:\n" + message);
+			producer.send(destination, messageBody);
+			System.out.println("Sent message:\n" + messageBody);
 			
 		} else if (cliArgsParser.getAction().toLowerCase().contentEquals("get")) {
 
 			// GET ...
 			consumer = context.createConsumer(destination); // autoclosable
-			String receivedMessage = consumer.receiveBody(String.class, 15000); // in ms or 15 seconds
-			System.out.println("\nReceived message:\n" + receivedMessage);
+			String receivedMessageBody = consumer.receiveBody(String.class, 15000); // in ms or 15 seconds
+			System.out.println("\nReceived message:\n" + receivedMessageBody);
+			
+			// File Option ?
+			if (!cliArgsParser.getMessageFile().contentEquals("")) {
+				// Write receivedMessage to file ...
+				Files.write(Paths.get(receivedMessageBody), receivedMessageBody.getBytes());
+			}
 
 		}
 

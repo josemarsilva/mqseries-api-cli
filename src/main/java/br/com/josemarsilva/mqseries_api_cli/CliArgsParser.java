@@ -9,7 +9,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-//import org.apache.log4j.Logger;
 
 
 /*
@@ -23,10 +22,6 @@ import org.apache.commons.cli.ParseException;
 
 public class CliArgsParser {
 
-	// Logger ...
-//	final static Logger logger = Logger.getLogger(CliArgsParser.class);
-
-
 	// Constants ...
 	public final static String APP_NAME = new String("mqseries-api-cli");
 	public final static String APP_VERSION = new String("v.2020.02.26.1200");
@@ -37,6 +32,8 @@ public class CliArgsParser {
 
 	// Constants Error Messages ...
 	public final static String MSG_ERROR_ACTION_INVALID = new String("Error: action '%s' is invalid ! Try 'get' or 'put'");
+	public final static String MSG_ERROR_MESSAGE_FILE_REQUIRED = new String("Error: message-body IS NOT PRESENT, so message-file MUST BE PRESENT! Try '-m YOUR-MESSAGE-HERE' or '-f your-message-filename.txt'");
+	public final static String MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED = new String("Error: message-body IS PRESENT, so message-file MUST BE OMMITED! Try to remove '-f %s'");
 	
 	// Properties ...
     private String action = new String("");
@@ -47,7 +44,7 @@ public class CliArgsParser {
     private String appUser = new String("");
     private String appPassword = new String("");
     private String queueName = new String("");
-    private String message = new String("");
+    private String messageBody = new String("");
     private String messageFile = new String("");
 
 
@@ -56,9 +53,7 @@ public class CliArgsParser {
      */
 	public CliArgsParser( String[] args ) {
 
-
 		// Options creating ...
-//		logger.info("Command line Options");
 		Options options = new Options();
 		
 		
@@ -116,16 +111,16 @@ public class CliArgsParser {
         		.desc("Queue name mqseries-api-cli uses to put or get messages to and from. Ex: -q DEV.QUEUE.1")
         		.hasArg()
         		.build();
-        Option messageOption = Option.builder("m")
-        		.longOpt("message") 
+        Option messageBodyOption = Option.builder("m")
+        		.longOpt("message-body") 
         		.required(false) 
-        		.desc("Message to put. Ex: -m 01020304050607080910")
+        		.desc("Message body to put. Ex: -m 01020304050607080910")
         		.hasArg()
         		.build();
         Option messageFileOption = Option.builder("f")
         		.longOpt("message-file") 
         		.required(false) 
-        		.desc("Message file to put to or get from. Ex: -f msg.txt")
+        		.desc("Message file to put to or get from body. Ex: -f msg.txt")
         		.hasArg()
         		.build();
         
@@ -139,7 +134,7 @@ public class CliArgsParser {
         options.addOption(appUserOption);
         options.addOption(appPasswordOption);
         options.addOption(queueNameOption);
-        options.addOption(messageOption);
+        options.addOption(messageBodyOption);
         options.addOption(messageFileOption);
         
         
@@ -163,11 +158,9 @@ public class CliArgsParser {
 	        	this.setAppUser( cmdLine.getOptionValue("app-user", "") );
 	        	this.setAppPassword( cmdLine.getOptionValue("app-password", "") );
 	        	this.setQueueName( cmdLine.getOptionValue("queue-name", "") );
-	        	this.setMessage( cmdLine.getOptionValue("message", "") );
-	        	this.setMessage( cmdLine.getOptionValue("message-file", "") );
-	        	
-	        	// Logger
-	        	
+	        	this.setMessageBody( cmdLine.getOptionValue("message-body", "") );
+	        	this.setMessageFile( cmdLine.getOptionValue("message-file", "") );
+	        		        	
 	        	// Check arguments Options ...
 	        	try {
 	        		checkArgumentOptions();
@@ -192,9 +185,17 @@ public class CliArgsParser {
 	//
 	private void checkArgumentOptions() throws Exception {
 		
-		// Check argument: action ...
+		// Check argument: action IN ( 'get', 'put' ) ...
 		if (!this.getAction().equals("get") && !this.getAction().equals("put")) {
 			throw new Exception(MSG_ERROR_ACTION_INVALID.replaceFirst("%s", this.getAction()));
+		}
+		// Check argument: message-body IS NULL message-file MUST NOT BE NULL ...
+		if (this.getMessageBody().equals("") && this.getMessageFile().equals("")) {
+			throw new Exception(MSG_ERROR_MESSAGE_FILE_REQUIRED);
+		}
+		// Check argument: message-body IS NOT NULL message-file MUST BE NULL ...
+		if (!this.getMessageBody().equals("") && !this.getMessageFile().equals("")) {
+			throw new Exception(MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED.replaceFirst("%s", this.getMessageFile()));
 		}
 				
 	}
@@ -266,12 +267,12 @@ public class CliArgsParser {
 		this.queueName = queueName;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getMessageBody() {
+		return messageBody;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setMessageBody(String messageBody) {
+		this.messageBody = messageBody;
 	}
 
 	public String getMessageFile() {
