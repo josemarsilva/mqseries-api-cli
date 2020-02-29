@@ -58,7 +58,164 @@ Este é o repositório do projeto **mqseries-api-cli**.
 
 ### 3.6. Guide for Demonstration
 
-* n/a
+* Running `mqseries-api-cli.jar` without arguments shows command line arguments options
+
+```cmd
+C:\...\dist> java -jar mqseries-api-cli.jar
+Missing required options: A, H, P, C, Q, p, q
+usage: mqseries-api-cli [<args-options-list>] - v.2020.02.29.1200
+ -A,--action <arg>         Action launched. List of values: ( 'put', 'get'
+                           ). Ex: -A put
+ -C,--channel <arg>        Channel name. Ex: -C DEV.APP.SVRCONN
+ -f,--message-file <arg>   Message file to put to or get from body. Ex: -f
+                           msg.txt
+ -h,--help                 shows usage help message. See more
+                           https://github.com/josemarsilva/mqseries-api-cl
+                           i
+ -H,--host <arg>           Host name or IP address. Ex: -H 127.0.0.1
+ -m,--message-body <arg>   Message body to put. Ex: -m
+                           01020304050607080910
+ -P,--port <arg>           Listener port number for your queue manager.
+                           Ex: -P 1414
+ -p,--app-password <arg>   Application Password to connect to MQ. Ex: -p
+                           passw0rd
+ -Q,--qmgr <arg>           Queue manager name. Ex: -Q QM1
+ -q,--queue-name <arg>     Queue name mqseries-api-cli uses to put or get
+                           messages to and from. Ex: -q DEV.QUEUE.1
+ -u,--app-user <arg>       Application User to connect to MQ. Default: ''
+```
+
+
+### 3.6.1. Demonstration of PUT
+
+* Running `run-demo-01.bat` you will PUT a message on the queue
+
+```cmd
+C:\...\dist>run-demo-01.bat
+```
+
+```console
+
+java -jar mqseries-api-cli.jar -A put -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.1 -m MSG-RUN-DEMO-01
+
+mqseries-api-cli - v.2020.02.29.1900
+Sent message:
+
+  JMSMessage class: jms_text
+  JMSType:          null
+  JMSDeliveryMode:  2
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  1583013940217
+  JMSExpiration:    0
+  JMSPriority:      4
+  JMSMessageID:     ID:414d5120514d31202020202020202020edc55a5e02125e25
+  JMSTimestamp:     1583013940217
+  JMSCorrelationID: null
+  JMSDestination:   queue:///DEV.QUEUE.1
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: MqSeries API CLI
+    JMSXDeliveryCount: 0
+    JMSXUserID: app
+    JMS_IBM_PutApplType: 28
+    JMS_IBM_PutDate: 20200229
+    JMS_IBM_PutTime: 22054024
+MSG-RUN-DEMO-01
+```
+
+### 3.6.2. Demonstration of PUT
+
+* Running `run-demo-02.bat` you will GET a message from the queue
+
+```cmd
+C:\...\dist>run-demo-02.bat
+```
+
+```console
+
+java -jar mqseries-api-cli.jar -A get -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.1
+
+mqseries-api-cli - v.2020.02.29.1900
+
+Received message:
+MSG-RUN-DEMO-01
+```
+
+
+### 3.6.3. Demonstration of PUT a file content
+
+* Running `run-demo-03.bat` you will PUT file contentes into a message queue
+
+```cmd
+C:\...\dist>run-demo-03.bat
+```
+
+```console
+
+java -jar mqseries-api-cli.jar -A put -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.1 -f message-file-send-example.txt
+
+mqseries-api-cli - v.2020.02.29.1900
+Sent message:
+
+  JMSMessage class: jms_text
+  JMSType:          null
+  JMSDeliveryMode:  2
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  1583014433248
+  JMSExpiration:    0
+  JMSPriority:      4
+  JMSMessageID:     ID:414d5120514d31202020202020202020edc55a5e02185e25
+  JMSTimestamp:     1583014433248
+  JMSCorrelationID: null
+  JMSDestination:   queue:///DEV.QUEUE.1
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: MqSeries API CLI
+    JMSXDeliveryCount: 0
+    JMSXUserID: app
+    JMS_IBM_PutApplType: 28
+    JMS_IBM_PutDate: 20200229
+    JMS_IBM_PutTime: 22135327
+This is the content of file 'message-file-send-example.txt' sent in message
+```
+
+
+### 3.6.4. Demonstration of GET into a file content
+
+* Running `run-demo-04.bat` you will GET a message from a queue and save it into a file
+
+```cmd
+C:\...\dist>run-demo-04.bat
+```
+
+```console
+
+java -jar mqseries-api-cli.jar -A put -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.1 -f message-file-send-example.txt
+
+mqseries-api-cli - v.2020.02.29.1900
+Sent message:
+
+  JMSMessage class: jms_text
+  JMSType:          null
+  JMSDeliveryMode:  2
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  1583014433248
+  JMSExpiration:    0
+  JMSPriority:      4
+  JMSMessageID:     ID:414d5120514d31202020202020202020edc55a5e02185e25
+  JMSTimestamp:     1583014433248
+  JMSCorrelationID: null
+  JMSDestination:   queue:///DEV.QUEUE.1
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: MqSeries API CLI
+    JMSXDeliveryCount: 0
+    JMSXUserID: app
+    JMS_IBM_PutApplType: 28
+    JMS_IBM_PutDate: 20200229
+    JMS_IBM_PutTime: 22135327
+This is the content of file 'message-file-send-example.txt' sent in message
+```
 
 
 ### 3.7. Patterns, Standard, Conventions and Best Practices

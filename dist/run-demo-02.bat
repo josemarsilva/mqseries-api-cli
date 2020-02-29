@@ -1,9 +1,16 @@
+@ECHO OFF
+REM ***************************************************************************
+REM filename   : run-demo-02
+REM description: Run Demonstration of GET
+REM souce-code : https://github.com/josemarsilva/mqseries-api-cli 
+REM obs        :
+REM ***************************************************************************
+
 SET ACTION=get
 SET HOST=127.0.0.1
 SET PORT=1414
 SET CHANNEL=DEV.APP.SVRCONN
 SET QMGR=QM1
-REM SET APP_USER=
 SET APP_PASSWORD=passw0rd
 SET QUEUE_NAME=DEV.QUEUE.1
 

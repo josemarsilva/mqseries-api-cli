@@ -1,9 +1,16 @@
+@ECHO OFF
+REM ***************************************************************************
+REM filename   : run-demo-01
+REM description: Run Demonstration of PUT
+REM souce-code : https://github.com/josemarsilva/mqseries-api-cli 
+REM obs        :
+REM ***************************************************************************
+
 SET ACTION=put
 SET HOST=127.0.0.1
 SET PORT=1414
 SET CHANNEL=DEV.APP.SVRCONN
 SET QMGR=QM1
-REM SET APP_USER=
 SET APP_PASSWORD=passw0rd
 SET QUEUE_NAME=DEV.QUEUE.1
 SET MESSAGE=MSG-RUN-DEMO-01

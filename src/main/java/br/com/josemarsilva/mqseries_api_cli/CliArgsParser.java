@@ -24,7 +24,7 @@ public class CliArgsParser {
 
 	// Constants ...
 	public final static String APP_NAME = new String("mqseries-api-cli");
-	public final static String APP_VERSION = new String("v.2020.02.26.1200");
+	public final static String APP_VERSION = new String("v.2020.02.29.1900");
 	public final static String APP_USAGE = new String(APP_NAME + " [<args-options-list>] - "+ APP_VERSION);
 
 	// Constants defaults ...
