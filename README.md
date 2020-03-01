@@ -92,7 +92,7 @@ AMQ8705I: Display Queue Manager Status Details.
 * Create a triggered queue on ´runmqsc´
 
 ```runmqsc
-DEFINE QLOCAL(TRG.QUEUE.1) REPLACE +
+DEFINE QLOCAL(DEV.QUEUE.3) REPLACE +
   TRIGGER +
   TRIGTYPE(first) +
   INITQ(SYSTEM.DEFAULT.INITIATION.QUEUE) +
@@ -116,10 +116,10 @@ AMQ8409I: Display Queue details.
 * Create a process program to be executed by trigger monitor
 
 ```runmsc
-DEFINE PROCESS(proc1) +
+DEFINE PROCESS(proc1) REPLACE +
   DESCR('Process to start server program') +
   APPLTYPE(UNIX) +
-  APPLICID('/tmp/mqseries-trigger-program.sh')
+  APPLICID('id >> /tmp/mqseries-trigger-program.log')
 ```
 
 ```console
@@ -135,6 +135,10 @@ bash-4.4$ vi /tmp/mqseries-trigger-program.sh
 ```vi
 # /usr/bin/bash
 date >> /tmp/mqseries-trigger-program.log
+```
+
+```bash
+bash-4.4$ chmod 777 /tmp/mqseries-trigger-program.sh
 ```
 
 

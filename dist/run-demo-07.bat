@@ -12,10 +12,11 @@ SET PORT=1414
 SET CHANNEL=DEV.APP.SVRCONN
 SET QMGR=QM1
 SET APP_PASSWORD=passw0rd
-SET QUEUE_NAME=DEV.QUEUE.1
+SET QUEUE_NAME=DEV.QUEUE.3
+SET MESSAGE_FILE_OPTION=-f message-file-received-example.txt
 
 ECHO.
-ECHO java -jar mqseries-api-cli.jar -A %ACTION% -H %HOST% -P %PORT% -C %CHANNEL% -Q %QMGR% -p %APP_PASSWORD% -q %QUEUE_NAME%
+ECHO java -jar mqseries-api-cli.jar -A %ACTION% -H %HOST% -P %PORT% -C %CHANNEL% -Q %QMGR% -p %APP_PASSWORD% -q %QUEUE_NAME% %MESSAGE_FILE_OPTION%
 ECHO.
 
-java -jar mqseries-api-cli.jar -A %ACTION% -H %HOST% -P %PORT% -C %CHANNEL% -Q %QMGR% -p %APP_PASSWORD% -q %QUEUE_NAME%
+java -jar mqseries-api-cli.jar -A %ACTION% -H %HOST% -P %PORT% -C %CHANNEL% -Q %QMGR% -p %APP_PASSWORD% -q %QUEUE_NAME% %MESSAGE_FILE_OPTION%
