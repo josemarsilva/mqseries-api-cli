@@ -30,4 +30,4 @@ target/*
 /target/
 
 # Custom
-/dist/message-file-received-example.txt
+/dist/message-file-received-example*.*
