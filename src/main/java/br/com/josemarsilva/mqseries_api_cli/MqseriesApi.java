@@ -71,8 +71,8 @@ public class MqseriesApi {
 		cf.setStringProperty(WMQConstants.WMQ_CHANNEL, cliArgsParser.getChannel());
 		cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQConstants.WMQ_CM_CLIENT);
 		cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, cliArgsParser.getQmgr());
-		cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, cliArgsParser.WMQ_APPLICATIONNAME);
-		cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
+		cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, cliArgsParser.WMQ_APPLICATIONNAME_DEFAULT);
+		cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, ( cliArgsParser.getUserAuthenticationMqcsp().contentEquals("false") ? false : true ));
 		cf.setStringProperty(WMQConstants.USERID, cliArgsParser.getAppUser());
 		cf.setStringProperty(WMQConstants.PASSWORD, cliArgsParser.getAppPassword());
 		
@@ -88,6 +88,7 @@ public class MqseriesApi {
 			
 			// File Option ? '-f <messageFile>'
 			if (!cliArgsParser.getMessageFile().contentEquals("")) {
+				System.out.println("Reading MessageBodyToSend from file '%s'".replaceAll("%s",cliArgsParser.getMessageFile()));
 				messageBodyToSend = new String(Files.readAllBytes(Paths.get(cliArgsParser.getMessageFile())));
 			} else {
 				messageBodyToSend = cliArgsParser.getMessageBody();
@@ -103,13 +104,15 @@ public class MqseriesApi {
 
 			// GET ...
 			consumer = context.createConsumer(destination); // autoclosable
-			String receivedMessageBody = consumer.receiveBody(String.class, 15000); // in ms or 15 seconds
+			String receivedMessageBody = consumer.receiveBody(String.class, cliArgsParser.TIMEOUT_CONSUMER_RECEIVE);
+			if (receivedMessageBody==null) {
+				receivedMessageBody = new String("");
+			}
 			System.out.println("\nReceived message:\n" + receivedMessageBody);
 			
-			// File Option ?
+			// File Option ? '-f <messageFile>'
 			if (!cliArgsParser.getMessageFile().contentEquals("")) {
-				// Write receivedMessage to file ...
-				System.out.println("Write receivedMessage to file '%s'".replaceAll("%s",cliArgsParser.getMessageFile()));
+				System.out.println("Writing ReceivedMessage to file '%s'".replaceAll("%s",cliArgsParser.getMessageFile()));
 				Files.write(Paths.get(cliArgsParser.getMessageFile()), receivedMessageBody.getBytes());
 			}
 

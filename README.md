@@ -45,7 +45,97 @@ Este é o repositório do projeto **mqseries-api-cli**.
 
 ### 3.3. Guide for Configuration
 
-* n/a
+#### 3.3.1. Configuring a MQSeries Trigger on Linux
+
+* Open a bash shell on MQSeries docker container
+
+```bash
+$ CONTAINER_ID=`sudo docker ps | grep ibmcom/mq | cut -d ' ' -f 1`
+$ echo CONTAINER_ID = $CONTAINER_ID
+$ sudo docker exec \
+  --tty \
+  --interactive \
+  ${CONTAINER_ID} \
+  bash
+```
+
+* Now we are inside MQSeries docker container machine
+
+```bash
+bash-4.4$ id
+uid=888(mqm) gid=888(mqm) groups=888(mqm),0(root)
+```
+
+* Run MQSeries-ScriptCommand to create triggered queue, configure process, etc
+
+```bash
+bash-4.4$ runmqsc QM1
+```
+
+```console
+5724-H72 (C) Copyright IBM Corp. 1994, 2019.
+Starting MQSC for queue manager QM1.
+AMQ8521I: Command completion and history unavailable.
+```
+
+* Display Queue Status before starting
+
+```runmqsc
+ display qmstatus
+```
+
+```console
+AMQ8705I: Display Queue Manager Status Details.
+   QMNAME(QM1)                             STATUS(RUNNING)
+```
+
+* Create a triggered queue on ´runmqsc´
+
+```runmqsc
+DEFINE QLOCAL(TRG.QUEUE.1) REPLACE +
+  TRIGGER +
+  TRIGTYPE(first) +
+  INITQ(SYSTEM.DEFAULT.INITIATION.QUEUE) +
+  PROCESS(proc1) +
+  DESCR('This is a triggered queue 1')
+```
+
+```console
+AMQ8006I: IBM MQ queue created.
+```
+
+```runmsc
+DISPLAY QUEUE(TRG*)
+```
+
+```console
+AMQ8409I: Display Queue details.
+   QUEUE(TRG.QUEUE.1)                      TYPE(QLOCAL)
+```
+
+* Create a process program to be executed by trigger monitor
+
+```runmsc
+DEFINE PROCESS(proc1) +
+  DESCR('Process to start server program') +
+  APPLTYPE(UNIX) +
+  APPLICID('/tmp/mqseries-trigger-program.sh')
+```
+
+```console
+AMQ8010I: IBM MQ process created.
+```
+
+* Edit your `/tmp/mqseries-trigger-program.sh`
+
+```bash
+bash-4.4$ vi /tmp/mqseries-trigger-program.sh
+```
+
+```vi
+# /usr/bin/bash
+date >> /tmp/mqseries-trigger-program.log
+```
 
 
 ### 3.4. Guide for Test
@@ -63,26 +153,32 @@ Este é o repositório do projeto **mqseries-api-cli**.
 ```cmd
 C:\...\dist> java -jar mqseries-api-cli.jar
 Missing required options: A, H, P, C, Q, p, q
-usage: mqseries-api-cli [<args-options-list>] - v.2020.02.29.1200
- -A,--action <arg>         Action launched. List of values: ( 'put', 'get'
-                           ). Ex: -A put
- -C,--channel <arg>        Channel name. Ex: -C DEV.APP.SVRCONN
- -f,--message-file <arg>   Message file to put to or get from body. Ex: -f
-                           msg.txt
- -h,--help                 shows usage help message. See more
-                           https://github.com/josemarsilva/mqseries-api-cl
-                           i
- -H,--host <arg>           Host name or IP address. Ex: -H 127.0.0.1
- -m,--message-body <arg>   Message body to put. Ex: -m
-                           01020304050607080910
- -P,--port <arg>           Listener port number for your queue manager.
-                           Ex: -P 1414
- -p,--app-password <arg>   Application Password to connect to MQ. Ex: -p
-                           passw0rd
- -Q,--qmgr <arg>           Queue manager name. Ex: -Q QM1
- -q,--queue-name <arg>     Queue name mqseries-api-cli uses to put or get
-                           messages to and from. Ex: -q DEV.QUEUE.1
- -u,--app-user <arg>       Application User to connect to MQ. Default: ''
+usage: mqseries-api-cli [<args-options-list>] - v.2020.02.29.2359
+ -A,--action <arg>                      Action launched. List of values: (
+                                        'put', 'get' ). Ex: -A put
+ -C,--channel <arg>                     Channel name. Ex: -C
+                                        DEV.APP.SVRCONN
+ -f,--message-file <arg>                Message file to put to or get from
+                                        body. Ex: -f msg.txt
+ -h,--help                              shows usage help message. See more
+                                        https://github.com/josemarsilva/mq
+                                        series-api-cli
+ -H,--host <arg>                        Host name or IP address. Ex: -H
+                                        127.0.0.1
+ -m,--message-body <arg>                Message body to put. Ex: -m
+                                        01020304050607080910
+ -n,--user-authentication-mqcsp <arg>   User Authentication MQCSP. Values
+                                        ('true', 'false'). Default: 'true'
+ -P,--port <arg>                        Listener port number for your
+                                        queue manager. Ex: -P 1414
+ -p,--app-password <arg>                Application Password to connect to
+                                        MQ. Ex: -p passw0rd
+ -Q,--qmgr <arg>                        Queue manager name. Ex: -Q QM1
+ -q,--queue-name <arg>                  Queue name mqseries-api-cli uses
+                                        to put or get messages to and
+                                        from. Ex: -q DEV.QUEUE.1
+ -u,--app-user <arg>                    Application User to connect to MQ.
+                                        Default: ''
 ```
 
 

@@ -1,7 +1,5 @@
 package br.com.josemarsilva.mqseries_api_cli;
 
-import java.io.File;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -24,17 +22,20 @@ public class CliArgsParser {
 
 	// Constants ...
 	public final static String APP_NAME = new String("mqseries-api-cli");
-	public final static String APP_VERSION = new String("v.2020.02.29.1900");
+	public final static String APP_VERSION = new String("v.2020.02.29.2359");
 	public final static String APP_USAGE = new String(APP_NAME + " [<args-options-list>] - "+ APP_VERSION);
 
 	// Constants defaults ...
-	final public static String WMQ_APPLICATIONNAME = new String("MqSeries API CLI");
+	final public static String WMQ_APPLICATIONNAME_DEFAULT = new String("MQSeries API CLI");
+	final public static int TIMEOUT_CONSUMER_RECEIVE = 15000; // in milliseconds
+	final public static String USER_AUTHENTICATION_MQCSP_DEFAULT = new String("true");
 
 	// Constants Error Messages ...
 	public final static String MSG_ERROR_ACTION_INVALID = new String("Error: action '%s' is invalid ! Try 'get' or 'put'");
 	public final static String MSG_ERROR_MESSAGE_FILE_REQUIRED = new String("Error: message-body IS NOT PRESENT, so message-file MUST BE PRESENT! Try '-m YOUR-MESSAGE-HERE' or '-f your-message-filename.txt'");
 	public final static String MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED = new String("Error: message-body IS PRESENT, so message-file MUST BE OMMITED! Try to remove '-f %s'");
 	public final static String MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED = new String("Error: message-body IS PRESENT but MUST BE OMMITED! Try to remove '-m %s'");
+	public final static String MSG_ERROR_MESSAGE_USERAUTHMQCSPVALUE = new String("Error: user-authentication-mqcsp VALUE '%s' IS NVALID! Try 'true' or 'false'");
 	
 	// Properties ...
     private String action = new String("");
@@ -42,6 +43,8 @@ public class CliArgsParser {
     private Integer port = new Integer(0);
     private String channel = new String("");
     private String qmgr = new String("");
+    private String appName = new String("");
+    private String userAuthenticationMqcsp = new String("");
     private String appUser = new String("");
     private String appPassword = new String("");
     private String queueName = new String("");
@@ -94,6 +97,18 @@ public class CliArgsParser {
         		.desc("Queue manager name. Ex: -Q QM1")
         		.hasArg()
         		.build();
+        Option appNameOption = Option.builder("n")
+        		.longOpt("app-name") 
+        		.required(false) 
+        		.desc("Application Name connect to MQ. Default: '" + WMQ_APPLICATIONNAME_DEFAULT + "'")
+        		.hasArg()
+        		.build();
+        Option userAuthenticationMqcspOption = Option.builder("n")
+        		.longOpt("user-authentication-mqcsp") 
+        		.required(false) 
+        		.desc("User Authentication MQCSP. Values ('true', 'false'). Default: '" + USER_AUTHENTICATION_MQCSP_DEFAULT + "'")
+        		.hasArg()
+        		.build();
         Option appUserOption = Option.builder("u")
         		.longOpt("app-user") 
         		.required(false) 
@@ -132,6 +147,8 @@ public class CliArgsParser {
         options.addOption(portOption);
         options.addOption(channelOption);
         options.addOption(qmgrOption);
+        options.addOption(appNameOption);
+        options.addOption(userAuthenticationMqcspOption);
         options.addOption(appUserOption);
         options.addOption(appPasswordOption);
         options.addOption(queueNameOption);
@@ -156,6 +173,8 @@ public class CliArgsParser {
 	        	this.setPort( Integer.parseInt( cmdLine.getOptionValue("port") ) );
 	        	this.setChannel( cmdLine.getOptionValue("channel", "") );
 	        	this.setQmgr( cmdLine.getOptionValue("qmgr", "") );
+	        	this.setAppName( cmdLine.getOptionValue("app-name", WMQ_APPLICATIONNAME_DEFAULT) );
+	        	this.setUserAuthenticationMqcsp( cmdLine.getOptionValue("user-authentication-mqcsp", USER_AUTHENTICATION_MQCSP_DEFAULT) );
 	        	this.setAppUser( cmdLine.getOptionValue("app-user", "") );
 	        	this.setAppPassword( cmdLine.getOptionValue("app-password", "") );
 	        	this.setQueueName( cmdLine.getOptionValue("queue-name", "") );
@@ -202,6 +221,10 @@ public class CliArgsParser {
 		if (this.getAction().equals("get") && !this.getMessageBody().equals("")) {
 			throw new Exception(MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED.replaceAll("%s", this.getMessageBody()));
 		}
+		// Check argument: user-authentication-mqcsp MUST BE ( 'true' or 'false' )  ...
+		if (!this.getUserAuthenticationMqcsp().equals("") && !this.getUserAuthenticationMqcsp().equals("true") && !this.getUserAuthenticationMqcsp().equals("false")) {
+			throw new Exception(MSG_ERROR_MESSAGE_USERAUTHMQCSPVALUE.replaceAll("%s", this.getUserAuthenticationMqcsp()));
+		}
 				
 	}
 
@@ -246,6 +269,22 @@ public class CliArgsParser {
 
 	public void setQmgr(String qmgr) {
 		this.qmgr = qmgr;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appUser = appName;
+	}
+
+	public String getUserAuthenticationMqcsp() {
+		return userAuthenticationMqcsp;
+	}
+
+	public void setUserAuthenticationMqcsp(String UserAuthenticationMqcsp) {
+		this.userAuthenticationMqcsp = UserAuthenticationMqcsp;
 	}
 
 	public String getAppUser() {
