@@ -31,7 +31,7 @@ public class CliArgsParser {
 	final public static String USER_AUTHENTICATION_MQCSP_DEFAULT = new String("true");
 
 	// Constants Error Messages ...
-	public final static String MSG_ERROR_ACTION_INVALID = new String("Error: action '%s' is invalid ! Try 'get' or 'put'");
+	public final static String MSG_ERROR_ACTION_INVALID = new String("Error: action '%s' is invalid ! Try 'put' or 'get' or 'get-all'");
 	public final static String MSG_ERROR_MESSAGE_FILE_REQUIRED = new String("Error: message-body IS NOT PRESENT, so message-file MUST BE PRESENT! Try '-m YOUR-MESSAGE-HERE' or '-f your-message-filename.txt'");
 	public final static String MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED = new String("Error: message-body IS PRESENT, so message-file MUST BE OMMITED! Try to remove '-f %s'");
 	public final static String MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED = new String("Error: message-body IS PRESENT but MUST BE OMMITED! Try to remove '-m %s'");
@@ -70,7 +70,7 @@ public class CliArgsParser {
         Option actionOption = Option.builder("A")
         		.longOpt("action") 
         		.required(true) 
-        		.desc("Action launched. List of values: ( 'put', 'get' ). Ex: -A put")
+        		.desc("Action launched. List of values: ( 'put', 'get', 'get-all' ). Ex: -A put")
         		.hasArg()
         		.build();
         Option hostOption = Option.builder("H")
@@ -206,7 +206,7 @@ public class CliArgsParser {
 	private void checkArgumentOptions() throws Exception {
 		
 		// Check argument: action IN ( 'get', 'put' ) ...
-		if (!this.getAction().equals("get") && !this.getAction().equals("put")) {
+		if (!this.getAction().equals("get") && !this.getAction().equals("get-all")  && !this.getAction().equals("put")) {
 			throw new Exception(MSG_ERROR_ACTION_INVALID.replaceFirst("%s", this.getAction()));
 		}
 		// Check argument: PUT message-body IS NULL, message-file MUST NOT BE NULL ...
@@ -218,7 +218,7 @@ public class CliArgsParser {
 			throw new Exception(MSG_ERROR_MESSAGE_FILE_MUSTBEOMMITED.replaceFirst("%s", this.getMessageFile()));
 		}
 		// Check argument: GET message-body MUST BE NULL ...
-		if (this.getAction().equals("get") && !this.getMessageBody().equals("")) {
+		if (this.getAction().equals("get") && this.getAction().equals("get-all") && !this.getMessageBody().equals("")) {
 			throw new Exception(MSG_ERROR_MESSAGE_BODY_MUSTBEOMMITED.replaceAll("%s", this.getMessageBody()));
 		}
 		// Check argument: user-authentication-mqcsp MUST BE ( 'true' or 'false' )  ...

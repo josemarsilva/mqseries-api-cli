@@ -116,6 +116,29 @@ public class MqseriesApi {
 				Files.write(Paths.get(cliArgsParser.getMessageFile()), receivedMessageBody.getBytes());
 			}
 
+		} else if (cliArgsParser.getAction().toLowerCase().contentEquals("get-all")) {
+
+			// GET-ALL ...
+			consumer = context.createConsumer(destination); // autoclosable
+			
+			// while not END-OF-QUEUE
+			boolean endOfQueue = false;
+			int index = 1;
+			while (!endOfQueue) {
+				String receivedMessageBody = consumer.receiveBody(String.class, cliArgsParser.TIMEOUT_CONSUMER_RECEIVE);
+				if (receivedMessageBody==null) {
+					endOfQueue = true;
+					receivedMessageBody = new String("");
+				}
+				System.out.println("\nReceived message:\n" + receivedMessageBody);
+				
+				// File Option ? '-f <messageFile>'
+				if (!endOfQueue && !cliArgsParser.getMessageFile().contentEquals("")) {
+					String messageFileName = new String( cliArgsParser.getMessageFile().replaceAll("\\.", "(" + String.valueOf(index++) + ")\\.") );
+					System.out.println("Writing ReceivedMessage to file '%s'".replaceAll("%s",messageFileName));
+					Files.write(Paths.get(messageFileName), receivedMessageBody.getBytes());
+				}
+			}
 		}
 
 	}
