@@ -159,7 +159,8 @@ C:\...\dist> java -jar mqseries-api-cli.jar
 Missing required options: A, H, P, C, Q, p, q
 usage: mqseries-api-cli [<args-options-list>] - v.2020.02.29.2359
  -A,--action <arg>                      Action launched. List of values: (
-                                        'put', 'get' ). Ex: -A put
+                                        'put', 'get', 'get-all' ). Ex: -A
+                                        put
  -C,--channel <arg>                     Channel name. Ex: -C
                                         DEV.APP.SVRCONN
  -f,--message-file <arg>                Message file to put to or get from
@@ -316,6 +317,91 @@ Sent message:
     JMS_IBM_PutTime: 22135327
 This is the content of file 'message-file-send-example.txt' sent in message
 ```
+
+### 3.6.4. Demonstration of PUT into queue with trigger
+
+* Running `run-demo-05.bat` you will PUT a message into a queue with trigger
+
+```cmd
+C:\...\dist>run-demo-05.bat
+```
+
+```console
+java -jar mqseries-api-cli.jar -A put -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.3 -m MSG-RUN-DEMO-05-TRIGGER-QUEUE
+
+mqseries-api-cli - v.2020.02.29.2359
+Sent message:
+
+  JMSMessage class: jms_text
+  JMSType:          null
+  JMSDeliveryMode:  2
+  JMSDeliveryDelay: 0
+  JMSDeliveryTime:  1583151166622
+  JMSExpiration:    0
+  JMSPriority:      4
+  JMSMessageID:     ID:414d5120514d3120202020202020202008f55c5e02ae3a21
+  JMSTimestamp:     1583151166622
+  JMSCorrelationID: null
+  JMSDestination:   queue:///DEV.QUEUE.3
+  JMSReplyTo:       null
+  JMSRedelivered:   false
+    JMSXAppID: MQSeries API CLI
+    JMSXDeliveryCount: 0
+    JMSXUserID: app
+    JMS_IBM_PutApplType: 28
+    JMS_IBM_PutDate: 20200302
+    JMS_IBM_PutTime: 12124513
+MSG-RUN-DEMO-05-TRIGGER-QUEUE
+```
+
+
+### 3.6.6. Demonstration of GET from a queue with trigger
+
+* Running `run-demo-06.bat` you will GET a message from a queue with trigger
+
+```cmd
+C:\...\dist>run-demo-06.bat
+```
+
+```console
+java -jar mqseries-api-cli.jar -A get -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.3
+
+mqseries-api-cli - v.2020.02.29.2359
+
+Received message:
+MSG-RUN-DEMO-05-TRIGGER-QUEUE
+```
+
+### 3.6.6. Demonstration of GET-ALL from a queue and save to file
+
+* Running `run-demo-07.bat` you will GET-ALL message from a queue and write to file
+
+```cmd
+C:\...\dist>run-demo-07.bat
+```
+
+```console
+
+java -jar mqseries-api-cli.jar -A get-all -H 127.0.0.1 -P 1414 -C DEV.APP.SVRCONN -Q QM1 -p passw0rd -q DEV.QUEUE.3 -f message-file-received-example.txt
+
+mqseries-api-cli - v.2020.02.29.2359
+
+Received message:
+BLABLEBLIBLOBLU
+Writing ReceivedMessage to file 'message-file-received-example(1).txt'
+
+Received message:
+blableblibloblu
+Writing ReceivedMessage to file 'message-file-received-example(2).txt'
+
+Received message:
+S0000002.LOG
+Writing ReceivedMessage to file 'message-file-received-example(3).txt'
+
+Received message:
+
+```
+
 
 
 ### 3.7. Patterns, Standard, Conventions and Best Practices
